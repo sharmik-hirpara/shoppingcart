@@ -5,12 +5,7 @@ import Counters from "./components/counters";
 
 class App extends Component {
   state = {
-    counters: [
-      { id: 1, value: 0 },
-      { id: 2, value: 0 },
-      { id: 3, value: 0 },
-      { id: 4, value: 0 }
-    ]
+    counters: [],
   };
 
   constructor() {
@@ -22,7 +17,7 @@ class App extends Component {
     console.log("App - Mounted");
   }
 
-  handleIncrement = counter => {
+  handleIncrement = (counter) => {
     const counters = [...this.state.counters];
     const index = counters.indexOf(counter);
     counters[index] = { ...counter };
@@ -30,16 +25,31 @@ class App extends Component {
     this.setState({ counters });
   };
 
+  handleDecrement = (counter) => {
+    const counters = [...this.state.counters];
+    const index = counters.indexOf(counter);
+    counters[index] = { ...counter };
+    counters[index].value--;
+    this.setState({ counters });
+  };
+
   handleReset = () => {
-    const counters = this.state.counters.map(c => {
+    const counters = this.state.counters.map((c) => {
       c.value = 0;
       return c;
     });
     this.setState({ counters });
   };
 
-  handleDelete = counterId => {
-    const counters = this.state.counters.filter(c => c.id !== counterId);
+  handleDeleteCounter = (counterId) => {
+    const counters = this.state.counters.filter((c) => c.id !== counterId);
+    this.setState({ counters });
+  };
+
+  handleAddCounter = () => {
+    const counters = this.state.counters;
+    var newID = !counters.length ? 0 : counters[counters.length - 1].id;
+    counters.push({ id: ++newID, value: 0 });
     this.setState({ counters });
   };
 
@@ -48,14 +58,16 @@ class App extends Component {
     return (
       <React.Fragment>
         <NavBar
-          totalCounters={this.state.counters.filter(c => c.value > 0).length}
+          totalCounters={this.state.counters.filter((c) => c.value > 0).length}
         />
         <main className="container">
           <Counters
             counters={this.state.counters}
             onReset={this.handleReset}
             onIncrement={this.handleIncrement}
-            onDelete={this.handleDelete}
+            onDecrement={this.handleDecrement}
+            onDeleteCounter={this.handleDeleteCounter}
+            onAddCounter={this.handleAddCounter}
           />
         </main>
       </React.Fragment>
